@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3 Aninhos da Mariah</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rose:      #C4867A;
+      --rose-soft: #E8B5A8;
+      --rose-pale: #FDF2F0;
+      --blue:      #8BBCC0;
+      --blue-soft: #B8D8DB;
+      --blue-pale: #EEF5F6;
+      --gold:      #C4A047;
+      --gold-soft: #E2C97A;
+      --gold-pale: #FAF5E4;
+      --text-dark: #4A3540;
+      --text-mid:  #8C7075;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(160deg, #FDF8F5 0%, #F8F0F4 55%, #F5F3F0 100%);
+      min-height: 100vh;
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* ---- Decorações laterais — visíveis só em telas largas ---- */
+    .side-deco {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 210px;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      display: none;
+    }
+
+    @media (min-width: 900px) {
+      .side-deco { display: block; }
+    }
+
+    .side-deco.left  { left:  0; }
+    .side-deco.right { right: 0; }
+
+    .side-deco img {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      height: auto;
+      transform: translateY(-50%);
+      opacity: 0.50;
+      mix-blend-mode: multiply;
+    }
+
+    .side-deco.right img {
+      transform: translateY(-50%) scaleX(-1);
+    }
+
+    /* ---- Estrelinhas de fundo ---- */
+    .stars-wrap {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      animation: brilho ease-in-out infinite alternate;
+    }
+
+    @keyframes brilho {
+      0%   { opacity: 0.06; transform: scale(0.7); }
+      100% { opacity: 0.38; transform: scale(1.3); }
+    }
+
+    /* ---- Layout ---- */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 44px 20px 72px;
+    }
+
+    /* ---- Hero ---- */
+    .hero {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .hero-logo {
+      width: 240px;
+      height: auto;
+      display: block;
+      margin: 0 auto 14px;
+      filter: drop-shadow(0 4px 14px rgba(140, 90, 90, 0.13));
+    }
+
+    .hero-tagline {
+      font-family: 'Pacifico', cursive;
+      font-size: 21px;
+      color: var(--rose);
+    }
+
+    .hero-desc {
+      margin-top: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-mid);
+    }
+
+    /* ---- Divisor ---- */
+    .wavy {
+      height: 20px;
+      overflow: hidden;
+      margin: 26px 0;
+    }
+
+    .wavy svg { width: 100%; display: block; }
+
+    /* ---- Info cards ---- */
+    .info-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .info-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 14px rgba(140, 90, 90, 0.07);
+    }
+
+    .info-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .info-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .icon-date  { background: var(--rose-pale); }
+    .icon-date  svg { stroke: var(--rose); }
+    .icon-time  { background: var(--blue-pale); }
+    .icon-time  svg { stroke: var(--blue); }
+    .icon-place { background: var(--gold-pale); }
+    .icon-place svg { stroke: var(--gold); }
+
+    .info-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-mid);
+      margin-bottom: 2px;
+    }
+
+    .info-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .info-sub {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-mid);
+      margin-top: 2px;
+    }
+
+    .site-link {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--rose);
+      text-decoration: none;
+      border-bottom: 2px solid var(--rose-soft);
+    }
+
+    .site-link:hover {
+      color: var(--blue);
+      border-color: var(--blue-soft);
+    }
+
+    /* ---- Form card ---- */
+    .form-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 36px 28px;
+      box-shadow: 0 6px 28px rgba(140, 90, 90, 0.09);
+      border: 1.5px solid rgba(196, 134, 122, 0.14);
+    }
+
+    .form-heading {
+      font-family: 'Pacifico', cursive;
+      font-size: 24px;
+      color: var(--rose);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .form-desc {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-mid);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .field { margin-bottom: 20px; }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-mid);
+      margin-bottom: 7px;
+    }
+
+    .req { color: var(--rose); }
+
+    input[type="text"],
+    input[type="tel"],
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1.5px solid #E8D5D0;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-dark);
+      background: var(--rose-pale);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--rose);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(196, 134, 122, 0.11);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 84px;
+    }
+
+    .radio-row { display: flex; gap: 10px; }
+
+    .radio-item {
+      flex: 1;
+      position: relative;
+    }
+
+    .radio-item input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 10px;
+      border: 1.5px solid #E8D5D0;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-mid);
+      background: var(--rose-pale);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .radio-item input:checked + .radio-btn {
+      background: linear-gradient(135deg, var(--rose), var(--blue));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(196, 134, 122, 0.28);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--rose), var(--blue));
+      border: none;
+      border-radius: 14px;
+      font-family: 'Pacifico', cursive;
+      font-size: 17px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      box-shadow: 0 5px 18px rgba(139, 188, 192, 0.38);
+      margin-top: 4px;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 26px rgba(139, 188, 192, 0.48);
+    }
+
+    .submit-btn:active:not(:disabled) { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    .error-banner {
+      display: none;
+      background: #FFF2F0;
+      border: 1.5px solid #F5C0BA;
+      border-radius: 10px;
+      padding: 11px 15px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #B05A50;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .success-block {
+      display: none;
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    .success-ring {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--rose), var(--blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 6px 22px rgba(139, 188, 192, 0.38);
+    }
+
+    .success-ring svg {
+      width: 34px;
+      height: 34px;
+      stroke: #fff;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .success-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 26px;
+      color: var(--rose);
+      margin-bottom: 10px;
+    }
+
+    .success-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-mid);
+      line-height: 1.65;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-mid);
+      opacity: 0.5;
+    }
+
+    @media (max-width: 480px) {
+      .hero-logo { width: 190px; }
+      .form-card  { padding: 26px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Personagens do kit (decoração lateral — visível só em telas largas) -->
+<div class="side-deco left">
+  <img src="assets/ITENS.jpg" alt="">
+</div>
+<div class="side-deco right">
+  <img src="assets/ITENS.jpg" alt="">
+</div>
+
+<!-- Estrelinhas de fundo -->
+<div class="stars-wrap" id="starsWrap"></div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <img class="hero-logo" src="assets/LOGO.png" alt="Mariah 3 anos">
+    <p class="hero-tagline">está fazendo 3 aninhos!</p>
+    <p class="hero-desc">Você está convidado para celebrar com a gente</p>
+  </div>
+
+  <!-- DIVISOR -->
+  <div class="wavy">
+    <svg viewBox="0 0 600 20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,10 C50,20 100,0 150,10 C200,20 250,0 300,10 C350,20 400,0 450,10 C500,20 550,0 600,10"
+            fill="none" stroke="#E8B5A8" stroke-width="2.5"/>
+    </svg>
+  </div>
+
+  <!-- INFO DO EVENTO -->
+  <div class="info-grid">
+
+    <div class="info-card">
+      <div class="info-icon icon-date">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="3"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8"  y1="2" x2="8"  y2="6"/>
+          <line x1="3"  y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
+      <div>
+        <div class="info-label">Data</div>
+        <div class="info-value">26 de julho de 2026</div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon icon-time">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/>
+          <polyline points="12 7 12 12 15.5 15.5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="info-label">Horário</div>
+        <div class="info-value">15h30</div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon icon-place">
+        <svg viewBox="0 0 24 24">
+          <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      </div>
+      <div>
+        <div class="info-label">Local</div>
+        <div class="info-value">Vila do Brincar</div>
+        <div class="info-sub">R. Vicente Mesquita, 1171 — Lagoa Nova, Natal/RN</div>
+        <a href="https://viladobrincar.com.br/" target="_blank" rel="noopener" class="site-link">Visitar site do local</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FORMULÁRIO -->
+  <div class="form-card">
+    <h2 class="form-heading">Confirme sua presença</h2>
+    <p class="form-desc">Preencha abaixo para que possamos te esperar</p>
+
+    <form id="rsvpForm" novalidate>
+
+      <div class="field">
+        <span class="field-label">Você vai comparecer?<span class="req">*</span></span>
+        <div class="radio-row">
+          <div class="radio-item">
+            <input type="radio" id="sim" name="presenca" value="Sim" required>
+            <label class="radio-btn" for="sim">Sim, estarei lá!</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" id="nao" name="presenca" value="Não">
+            <label class="radio-btn" for="nao">Não poderei ir</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="nome">Seu nome<span class="req">*</span></label>
+        <input type="text" id="nome" name="nome" placeholder="Nome completo" required autocomplete="name">
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="acompanhante">Nome do acompanhante</label>
+        <input type="text" id="acompanhante" name="acompanhante" placeholder="Deixe em branco se vier sozinho(a)">
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="telefone">WhatsApp<span class="req">*</span></label>
+        <input type="tel" id="telefone" name="telefone" placeholder="(84) 99999-9999" required autocomplete="tel">
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="restricao">Restrição alimentar</label>
+        <textarea id="restricao" name="restricao" placeholder="Ex: alergia a amendoim, vegetariano... (opcional)"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Confirmar presença</button>
+      <div class="error-banner" id="errorBanner"></div>
+
+    </form>
+
+    <div class="success-block" id="successBlock">
+      <div class="success-ring">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div class="success-title">Confirmado!</div>
+      <p class="success-text">
+        Obrigado! Sua presença foi registrada.<br>
+        Mal podemos esperar para te ver lá!
+      </p>
+    </div>
+  </div>
+
+  <div class="footer">Feito com muito amor para a Mariah</div>
+
+</div>
+
+<script>
+  // Estrelinhas sutis
+  (function () {
+    const wrap   = document.getElementById('starsWrap');
+    const colors = ['#C4867A','#8BBCC0','#C4A047','#E8B5A8','#B8D8DB','#E2C97A'];
+    for (let i = 0; i < 36; i++) {
+      const el = document.createElement('div');
+      el.className = 'star';
+      const sz = Math.random() * 5 + 2;
+      Object.assign(el.style, {
+        left:             (Math.random() * 100) + '%',
+        top:              (Math.random() * 100) + '%',
+        width:            sz + 'px',
+        height:           sz + 'px',
+        background:       colors[Math.floor(Math.random() * colors.length)],
+        animationDuration:(Math.random() * 3 + 2) + 's',
+        animationDelay:   (Math.random() * 5) + 's',
+      });
+      wrap.appendChild(el);
+    }
+  })();
+
+  // Envio do formulário
+  const SCRIPT_URL = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+
+  document.getElementById('rsvpForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const btn      = document.getElementById('submitBtn');
+    const errEl    = document.getElementById('errorBanner');
+    const presenca = document.querySelector('input[name="presenca"]:checked');
+
+    errEl.style.display = 'none';
+
+    if (!presenca) {
+      errEl.textContent   = 'Por favor, selecione se você vai comparecer ou não.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!document.getElementById('nome').value.trim()) {
+      errEl.textContent   = 'Por favor, informe seu nome.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!document.getElementById('telefone').value.trim()) {
+      errEl.textContent   = 'Por favor, informe seu WhatsApp.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Enviando…';
+
+    const payload = {
+      timestamp:    new Date().toLocaleString('pt-BR', { timeZone: 'America/Fortaleza' }),
+      presenca:     presenca.value,
+      nome:         document.getElementById('nome').value.trim(),
+      acompanhante: document.getElementById('acompanhante').value.trim(),
+      telefone:     document.getElementById('telefone').value.trim(),
+      restricao:    document.getElementById('restricao').value.trim(),
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+
+      document.getElementById('rsvpForm').style.display     = 'none';
+      document.getElementById('successBlock').style.display = 'block';
+    } catch (err) {
+      errEl.textContent   = 'Erro ao enviar. Verifique sua conexão e tente novamente.';
+      errEl.style.display = 'block';
+      btn.disabled    = false;
+      btn.textContent = 'Confirmar presença';
+    }
+  });
+</script>
+
+</body>
+</html>
