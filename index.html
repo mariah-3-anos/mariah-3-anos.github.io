@@ -211,6 +211,44 @@
       border-color: var(--blue-soft);
     }
 
+    .map-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .map-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      background: #fff;
+      border: 1.5px solid var(--rose-soft);
+      border-radius: 999px;
+      color: var(--rose);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .map-btn:hover {
+      background: var(--rose);
+      color: #fff;
+      border-color: var(--rose);
+    }
+
+    .map-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     /* ---- Form card ---- */
     .form-card {
       background: #fff;
@@ -480,7 +518,20 @@
         <div class="info-label">Local</div>
         <div class="info-value">Vila do Brincar</div>
         <div class="info-sub">R. Vicente Mesquita, 1171 — Lagoa Nova, Natal/RN</div>
-        <a href="https://viladobrincar.com.br/" target="_blank" rel="noopener" class="site-link">Visitar site do local</a>
+        <div class="map-actions">
+          <a href="https://www.google.com/maps/search/?api=1&query=Vila+do+Brincar+R.+Vicente+Mesquita+1171+Natal+RN" target="_blank" rel="noopener" class="map-btn">
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Google Maps
+          </a>
+          <a href="https://waze.com/ul?q=Vila+do+Brincar+R.+Vicente+Mesquita+1171+Natal+RN&navigate=yes" target="_blank" rel="noopener" class="map-btn">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="10" r="0.5" fill="currentColor"/><circle cx="15" cy="10" r="0.5" fill="currentColor"/></svg>
+            Waze
+          </a>
+          <a href="https://viladobrincar.com.br/" target="_blank" rel="noopener" class="map-btn">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+            Site
+          </a>
+        </div>
       </div>
     </div>
 
