@@ -522,11 +522,6 @@
         <input type="tel" id="telefone" name="telefone" placeholder="(84) 99999-9999" required autocomplete="tel">
       </div>
 
-      <div class="field">
-        <label class="field-label" for="restricao">Restrição alimentar</label>
-        <textarea id="restricao" name="restricao" placeholder="Ex: alergia a amendoim, vegetariano... (opcional)"></textarea>
-      </div>
-
       <button type="submit" class="submit-btn" id="submitBtn">Confirmar presença</button>
       <div class="error-banner" id="errorBanner"></div>
 
@@ -570,10 +565,10 @@
     }
   })();
 
-  // Envio do formulário
-  const SCRIPT_URL = 'https://script.google.com/a/macros/stone.com.br/s/AKfycbzAn8l8o4cRZeHcNFmw5AGrEVl6TAuT78NChBRmNOayrL6CgEuhUT1QkkDxUCLTUeeU/exec';
+  // Envio do formulário via Google Forms (sem CORS)
+  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSefBM6AeoO95oEdUY54unUT4j8-6osHisRfdNNF2msrRW7x8w/formResponse';
 
-  document.getElementById('rsvpForm').addEventListener('submit', async function (e) {
+  document.getElementById('rsvpForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const btn      = document.getElementById('submitBtn');
@@ -601,31 +596,42 @@
     btn.disabled    = true;
     btn.textContent = 'Enviando…';
 
-    const payload = {
-      timestamp:    new Date().toLocaleString('pt-BR', { timeZone: 'America/Fortaleza' }),
-      presenca:     presenca.value,
-      nome:         document.getElementById('nome').value.trim(),
-      acompanhante: document.getElementById('acompanhante').value.trim(),
-      telefone:     document.getElementById('telefone').value.trim(),
-      restricao:    document.getElementById('restricao').value.trim(),
+    let iframe = document.getElementById('_gf_frame');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.name = '_gf_frame';
+      iframe.id   = '_gf_frame';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+    }
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = FORM_URL;
+    form.target = '_gf_frame';
+    form.style.display = 'none';
+
+    const campos = {
+      'entry.2062536753': presenca.value,
+      'entry.1143640476': document.getElementById('nome').value.trim(),
+      'entry.1204960290': document.getElementById('acompanhante').value.trim(),
+      'entry.902093424':  document.getElementById('telefone').value.trim(),
     };
 
-    try {
-      await fetch(SCRIPT_URL, {
-        method:  'POST',
-        mode:    'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload),
-      });
+    Object.entries(campos).forEach(function(par) {
+      const input = document.createElement('input');
+      input.type  = 'hidden';
+      input.name  = par[0];
+      input.value = par[1];
+      form.appendChild(input);
+    });
 
-      document.getElementById('rsvpForm').style.display     = 'none';
-      document.getElementById('successBlock').style.display = 'block';
-    } catch (err) {
-      errEl.textContent   = 'Erro ao enviar. Verifique sua conexão e tente novamente.';
-      errEl.style.display = 'block';
-      btn.disabled    = false;
-      btn.textContent = 'Confirmar presença';
-    }
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+
+    document.getElementById('rsvpForm').style.display     = 'none';
+    document.getElementById('successBlock').style.display = 'block';
   });
 </script>
 
