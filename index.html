@@ -611,14 +611,17 @@
     form.target = '_gf_frame';
     form.style.display = 'none';
 
-    const campos = {
-      'entry.2062536753': presenca.value,
-      'entry.1143640476': document.getElementById('nome').value.trim(),
-      'entry.1204960290': document.getElementById('acompanhante').value.trim(),
-      'entry.902093424':  document.getElementById('telefone').value.trim(),
-    };
+    const campos = [
+      ['entry.2062536753', presenca.value],
+      ['entry.1143640476', document.getElementById('nome').value.trim()],
+      ['entry.1204960290', document.getElementById('acompanhante').value.trim()],
+      ['entry.902093424',  document.getElementById('telefone').value.trim()],
+      ['fbzx',             String(Math.floor(Math.random() * 9e18))],
+      ['fvv',              '1'],
+      ['pageHistory',      '0'],
+    ];
 
-    Object.entries(campos).forEach(function(par) {
+    campos.forEach(function(par) {
       const input = document.createElement('input');
       input.type  = 'hidden';
       input.name  = par[0];
