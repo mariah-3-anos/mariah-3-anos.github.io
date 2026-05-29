@@ -32,37 +32,32 @@
       overflow-x: hidden;
     }
 
-    /* ---- Decorações laterais — visíveis só em telas largas ---- */
-    .side-deco {
+    /* ---- Papel decorativo de fundo (fica fixo na viewport) ---- */
+    .bg-paper {
       position: fixed;
-      top: 0;
-      bottom: 0;
-      width: 210px;
+      inset: 0;
+      background: url('assets/PAPEL2.jpg') center/cover no-repeat;
       pointer-events: none;
       z-index: 0;
-      overflow: hidden;
-      display: none;
     }
 
     @media (min-width: 900px) {
-      .side-deco { display: block; }
-    }
-
-    .side-deco.left  { left:  0; }
-    .side-deco.right { right: 0; }
-
-    .side-deco img {
-      position: absolute;
-      top: 50%;
-      width: 100%;
-      height: auto;
-      transform: translateY(-50%);
-      opacity: 0.50;
-      mix-blend-mode: multiply;
-    }
-
-    .side-deco.right img {
-      transform: translateY(-50%) scaleX(-1);
+      .bg-paper {
+        background-size: auto 100%;
+        background-position: center;
+      }
+      .bg-paper::before,
+      .bg-paper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 50vw;
+        background: url('assets/PAPEL2.jpg') no-repeat;
+        background-size: auto 100%;
+      }
+      .bg-paper::before { left: -50vw; background-position: right center; }
+      .bg-paper::after  { right: -50vw; background-position: left center; transform: scaleX(-1); }
     }
 
     /* ---- Estrelinhas de fundo ---- */
@@ -251,16 +246,11 @@
 
     /* ---- Form card ---- */
     .form-card {
-      position: relative;
-      background: #FBF6EE url('assets/PAPEL2.jpg') center/cover no-repeat;
+      background: #fff;
       border-radius: 24px;
-      padding: 70px 48px;
+      padding: 36px 28px;
       box-shadow: 0 6px 28px rgba(140, 90, 90, 0.12);
-    }
-
-    .form-card > * {
-      position: relative;
-      z-index: 1;
+      border: 1.5px solid rgba(196, 134, 122, 0.14);
     }
 
     .form-heading {
@@ -494,19 +484,14 @@
 
     @media (max-width: 480px) {
       .hero-logo { width: 190px; }
-      .form-card  { padding: 54px 32px; }
+      .form-card  { padding: 26px 16px; }
     }
   </style>
 </head>
 <body>
 
-<!-- Personagens do kit (decoração lateral — visível só em telas largas) -->
-<div class="side-deco left">
-  <img src="assets/ITENS.jpg" alt="">
-</div>
-<div class="side-deco right">
-  <img src="assets/ITENS.jpg" alt="">
-</div>
+<!-- Papel decorativo de fundo (com personagens do reino) -->
+<div class="bg-paper"></div>
 
 <!-- Estrelinhas de fundo -->
 <div class="stars-wrap" id="starsWrap"></div>
