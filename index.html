@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>3 Aninhos da Mariah</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23FDF2F0'/><text x='50' y='82' font-size='86' font-family='Georgia,serif' text-anchor='middle' fill='%23C4867A' font-style='italic' font-weight='700'>M</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
   <style>
     :root {
       --rose:      #C4867A;
@@ -25,7 +27,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Nunito', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       background: linear-gradient(160deg, #FDF8F5 0%, #F8F0F4 55%, #F5F3F0 100%);
       min-height: 100vh;
       color: var(--text-dark);
@@ -104,7 +106,7 @@
     }
 
     .hero-tagline {
-      font-family: 'Pacifico', cursive;
+      font-family: 'Dancing Script', cursive;
       font-size: 21px;
       color: var(--rose);
     }
@@ -254,7 +256,7 @@
     }
 
     .form-heading {
-      font-family: 'Pacifico', cursive;
+      font-family: 'Dancing Script', cursive;
       font-size: 24px;
       color: var(--rose);
       text-align: center;
@@ -290,7 +292,7 @@
       padding: 12px 15px;
       border: 1.5px solid #E8D5D0;
       border-radius: 10px;
-      font-family: 'Nunito', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 15px;
       font-weight: 600;
       color: var(--text-dark);
@@ -331,7 +333,7 @@
       padding: 12px 10px;
       border: 1.5px solid #E8D5D0;
       border-radius: 10px;
-      font-family: 'Nunito', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 14px;
       font-weight: 700;
       color: var(--text-mid);
@@ -354,7 +356,7 @@
       background: linear-gradient(135deg, var(--rose), var(--blue));
       border: none;
       border-radius: 14px;
-      font-family: 'Pacifico', cursive;
+      font-family: 'Dancing Script', cursive;
       font-size: 17px;
       color: #fff;
       cursor: pointer;
@@ -413,7 +415,7 @@
     }
 
     .success-title {
-      font-family: 'Pacifico', cursive;
+      font-family: 'Dancing Script', cursive;
       font-size: 26px;
       color: var(--rose);
       margin-bottom: 10px;
@@ -482,9 +484,122 @@
       opacity: 0.5;
     }
 
+    /* ---- Contagem regressiva ---- */
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 6px 0 20px;
+    }
+
+    .countdown-item {
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px 4px;
+      text-align: center;
+      box-shadow: 0 3px 14px rgba(140, 90, 90, 0.08);
+      border: 1.5px solid rgba(196, 134, 122, 0.12);
+    }
+
+    .countdown-num {
+      font-family: 'Dancing Script', cursive;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--rose);
+    }
+
+    .countdown-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-mid);
+      margin-top: 4px;
+    }
+
+    .countdown-message {
+      grid-column: 1 / -1;
+      font-family: 'Dancing Script', cursive;
+      font-size: 30px;
+      color: var(--rose);
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 3px 14px rgba(140, 90, 90, 0.08);
+    }
+
+    /* ---- Card de Dica ---- */
+    .tip-card {
+      background: linear-gradient(135deg, #FFF8E8, #FDF2F0);
+      border-radius: 18px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 3px 14px rgba(140, 90, 90, 0.07);
+      border: 1.5px dashed rgba(196, 160, 71, 0.35);
+      margin-top: 10px;
+    }
+
+    .tip-card .info-icon {
+      background: #fff;
+    }
+
+    .tip-card .info-icon svg { stroke: var(--gold); }
+
+    .tip-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--gold);
+      margin-bottom: 3px;
+    }
+
+    .tip-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.45;
+    }
+
+    /* ---- Botão fixo (sticky) ---- */
+    .sticky-btn {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      background: linear-gradient(135deg, var(--rose), var(--blue));
+      color: #fff;
+      text-decoration: none;
+      padding: 13px 26px;
+      border-radius: 999px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 19px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(196, 134, 122, 0.40);
+      transition: opacity 0.3s, transform 0.3s;
+      white-space: nowrap;
+    }
+
+    .sticky-btn.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(20px);
+    }
+
+    .sticky-btn:hover {
+      box-shadow: 0 10px 30px rgba(196, 134, 122, 0.55);
+    }
+
     @media (max-width: 480px) {
-      .hero-logo { width: 190px; }
-      .form-card  { padding: 26px 16px; }
+      .hero-logo      { width: 190px; }
+      .form-card      { padding: 26px 16px; }
+      .countdown-num  { font-size: 28px; }
+      .countdown-item { padding: 10px 2px; }
     }
   </style>
 </head>
@@ -505,6 +620,26 @@
     <p class="hero-desc">Você está convidado para celebrar com a gente</p>
   </div>
 
+  <!-- CONTAGEM REGRESSIVA -->
+  <div class="countdown" id="countdown" data-aos="fade-up">
+    <div class="countdown-item">
+      <div class="countdown-num" id="cdDays">--</div>
+      <div class="countdown-label">dias</div>
+    </div>
+    <div class="countdown-item">
+      <div class="countdown-num" id="cdHours">--</div>
+      <div class="countdown-label">horas</div>
+    </div>
+    <div class="countdown-item">
+      <div class="countdown-num" id="cdMinutes">--</div>
+      <div class="countdown-label">min</div>
+    </div>
+    <div class="countdown-item">
+      <div class="countdown-num" id="cdSeconds">--</div>
+      <div class="countdown-label">seg</div>
+    </div>
+  </div>
+
   <!-- DIVISOR -->
   <div class="wavy">
     <svg viewBox="0 0 600 20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
@@ -516,7 +651,7 @@
   <!-- INFO DO EVENTO -->
   <div class="info-grid">
 
-    <div class="info-card">
+    <div class="info-card" data-aos="fade-up">
       <div class="info-icon icon-date">
         <svg viewBox="0 0 24 24">
           <rect x="3" y="4" width="18" height="18" rx="3"/>
@@ -541,7 +676,7 @@
       </div>
     </div>
 
-    <div class="info-card">
+    <div class="info-card" data-aos="fade-up" data-aos-delay="80">
       <div class="info-icon icon-time">
         <svg viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="9"/>
@@ -554,7 +689,7 @@
       </div>
     </div>
 
-    <div class="info-card">
+    <div class="info-card" data-aos="fade-up" data-aos-delay="160">
       <div class="info-icon icon-place">
         <svg viewBox="0 0 24 24">
           <path d="M21 10c0 6-9 13-9 13S3 16 3 10a9 9 0 0 1 18 0z"/>
@@ -582,10 +717,20 @@
       </div>
     </div>
 
+    <div class="tip-card" data-aos="fade-up" data-aos-delay="240">
+      <div class="info-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c-3 4-5 7-5 10a5 5 0 0 0 10 0c0-3-2-6-5-10z"/></svg>
+      </div>
+      <div>
+        <div class="tip-label">Dica para os convidados</div>
+        <div class="tip-text">Aqui no espaço tem brincadeiras com água! Leve roupa de banho e toalha para a criança aproveitar.</div>
+      </div>
+    </div>
+
   </div>
 
   <!-- FORMULÁRIO -->
-  <div class="form-card">
+  <div class="form-card" data-aos="fade-up">
     <h2 class="form-heading">Confirme sua presença</h2>
     <p class="form-desc">Preencha abaixo para que possamos te esperar</p>
 
@@ -629,15 +774,14 @@
       <div class="success-ring">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
       </div>
-      <div class="success-title">Confirmado!</div>
+      <div class="success-title">Oba!</div>
       <p class="success-text">
-        Obrigado! Sua presença foi registrada.<br>
-        Mal podemos esperar para te ver lá!
+        Mal podemos esperar para brincar com você, <span id="successName">amiguinho(a)</span>!
       </p>
     </div>
   </div>
 
-  <div class="contact-card">
+  <div class="contact-card" data-aos="fade-up">
     <p class="contact-text">Caso precise de ajuda ou queira falar com os pais da Mariah, estamos à disposição no WhatsApp abaixo:</p>
     <a href="https://wa.me/5584994818997" target="_blank" rel="noopener" class="whatsapp-btn">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.435-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413"/></svg>
@@ -649,7 +793,68 @@
 
 </div>
 
+<!-- Botão fixo de confirmação -->
+<a href="#rsvpForm" class="sticky-btn" id="stickyBtn">Confirmar presença</a>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
+  // Inicia animações ao rolar
+  if (window.AOS) AOS.init({ duration: 700, once: true, offset: 60 });
+
+  // Contagem regressiva — 26/07/2026 às 15h30 (BRT, UTC-3)
+  (function () {
+    const eventDate = new Date('2026-07-26T15:30:00-03:00').getTime();
+    const dEl = document.getElementById('cdDays');
+    const hEl = document.getElementById('cdHours');
+    const mEl = document.getElementById('cdMinutes');
+    const sEl = document.getElementById('cdSeconds');
+    const wrap = document.getElementById('countdown');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      const diff = eventDate - Date.now();
+      if (diff <= 0) {
+        wrap.innerHTML = '<div class="countdown-message">É hoje! Vamos comemorar!</div>';
+        clearInterval(timer);
+        return;
+      }
+      const dias = Math.floor(diff / 86400000);
+      const horas = Math.floor((diff / 3600000) % 24);
+      const min = Math.floor((diff / 60000) % 60);
+      const seg = Math.floor((diff / 1000) % 60);
+      dEl.textContent = pad(dias);
+      hEl.textContent = pad(horas);
+      mEl.textContent = pad(min);
+      sEl.textContent = pad(seg);
+    }
+    tick();
+    const timer = setInterval(tick, 1000);
+  })();
+
+  // Botão fixo — esconde quando o formulário está visível na tela
+  (function () {
+    const btn  = document.getElementById('stickyBtn');
+    const form = document.getElementById('rsvpForm');
+    if (!btn || !form) return;
+
+    function avaliar() {
+      const r = form.getBoundingClientRect();
+      const formVisivel = r.top < window.innerHeight - 100 && r.bottom > 100;
+      const enviado = form.style.display === 'none';
+      btn.classList.toggle('hidden', formVisivel || enviado);
+    }
+
+    avaliar();
+    window.addEventListener('scroll', avaliar, { passive: true });
+    window.addEventListener('resize', avaliar);
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  })();
+
   // Estrelinhas sutis
   (function () {
     const wrap   = document.getElementById('starsWrap');
@@ -788,8 +993,15 @@
     form.submit();
     document.body.removeChild(form);
 
+    const nomeCrianca = document.getElementById('nome').value.trim();
+    if (nomeCrianca) {
+      const primeiroNome = nomeCrianca.split(' ')[0];
+      document.getElementById('successName').textContent = primeiroNome;
+    }
+
     document.getElementById('rsvpForm').style.display     = 'none';
     document.getElementById('successBlock').style.display = 'block';
+    document.getElementById('stickyBtn').classList.add('hidden');
   });
 </script>
 
