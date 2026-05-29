@@ -491,6 +491,16 @@
       <div>
         <div class="info-label">Data</div>
         <div class="info-value">26 de julho de 2026</div>
+        <div class="map-actions">
+          <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=3+Aninhos+da+Mariah&dates=20260726T183000Z/20260726T213000Z&details=Festa+de+anivers%C3%A1rio+da+Mariah&location=Vila+do+Brincar%2C+R.+Vicente+Mesquita%2C+1171+-+Lagoa+Nova%2C+Natal%2FRN" target="_blank" rel="noopener" class="map-btn">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Google Agenda
+          </a>
+          <a href="#" onclick="baixarICS(event)" class="map-btn">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Apple / iCloud
+          </a>
+        </div>
       </div>
     </div>
 
@@ -615,6 +625,36 @@
       wrap.appendChild(el);
     }
   })();
+
+  // Download do evento .ics para Apple/Outlook
+  function baixarICS(e) {
+    e.preventDefault();
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Mariah 3 Anos//PT-BR',
+      'BEGIN:VEVENT',
+      'UID:mariah-3-anos-2026@github.io',
+      'DTSTAMP:20260101T000000Z',
+      'DTSTART:20260726T183000Z',
+      'DTEND:20260726T213000Z',
+      'SUMMARY:3 Aninhos da Mariah',
+      'LOCATION:Vila do Brincar\\, R. Vicente Mesquita\\, 1171 - Lagoa Nova\\, Natal/RN',
+      'DESCRIPTION:Festa de aniversário da Mariah',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href     = url;
+    link.download = 'aniversario-mariah.ics';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
 
   // Envio do formulário via Google Forms (sem CORS)
   const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSefBM6AeoO95oEdUY54unUT4j8-6osHisRfdNNF2msrRW7x8w/formResponse';
