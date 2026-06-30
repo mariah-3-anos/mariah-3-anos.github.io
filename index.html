@@ -964,24 +964,35 @@
       'pageHistory':      '0',
     });
 
-    function mostrarSucesso() {
+    function mostrarSucesso(debugInfo) {
       if (nomeCrianca) {
         document.getElementById('successName').textContent = nomeCrianca.split(' ')[0];
       }
       document.getElementById('rsvpForm').style.display     = 'none';
       document.getElementById('successBlock').style.display = 'block';
       document.getElementById('stickyBtn').classList.add('hidden');
+
+      // DEBUG TEMPORÁRIO — adiciona linha visível com o método usado
+      const dbg = document.createElement('div');
+      dbg.style.cssText = 'margin-top:18px;padding:10px;background:#FFF8E1;border:1px solid #E2C97A;border-radius:8px;font-size:12px;color:#7B5E1A;text-align:center;';
+      dbg.textContent = 'DEBUG: ' + debugInfo;
+      document.getElementById('successBlock').appendChild(dbg);
     }
 
-    // 1ª tentativa: sendBeacon (mais robusto, sobrevive a navegação)
-    let enviado = false;
+    // 1ª tentativa: sendBeacon
+    let beaconOk = false;
     if (navigator.sendBeacon) {
       const blob = new Blob([params.toString()], { type: 'application/x-www-form-urlencoded' });
-      enviado = navigator.sendBeacon(FORM_URL, blob);
+      try {
+        beaconOk = navigator.sendBeacon(FORM_URL, blob);
+      } catch (err) {
+        mostrarSucesso('beacon ERRO: ' + err.message);
+        return;
+      }
     }
 
-    if (enviado) {
-      mostrarSucesso();
+    if (beaconOk) {
+      mostrarSucesso('sendBeacon=true');
     } else {
       // 2ª tentativa: fetch keepalive
       fetch(FORM_URL, {
@@ -990,7 +1001,9 @@
         keepalive: true,
         headers:   { 'Content-Type': 'application/x-www-form-urlencoded' },
         body:      params.toString(),
-      }).finally(mostrarSucesso);
+      })
+      .then(function (r) { mostrarSucesso('fetch type=' + r.type + ', status=' + r.status); })
+      .catch(function (err) { mostrarSucesso('fetch ERRO: ' + err.message); });
     }
   });
 </script>
