@@ -906,9 +906,9 @@
     URL.revokeObjectURL(url);
   }
 
-  // Envio do formulário para o Google Apps Script
+  // Envio do formulário direto para o Google Forms via iframe oculto
   (function () {
-    const SCRIPT_URL = 'https://script.google.com/a/macros/stone.com.br/s/AKfycbxYQULezmG9X6ukuXVxH5idWVs1Q3JUkg4MzYDJej_AIBWAxLNbJVVql8SlhY3oPP9t/exec';
+    const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSefBM6AeoO95oEdUY54unUT4j8-6osHisRfdNNF2msrRW7x8w/formResponse';
 
     const form     = document.getElementById('rsvpForm');
     const success  = document.getElementById('successBlock');
@@ -917,17 +917,25 @@
     const stickyBt = document.getElementById('stickyBtn');
     if (!form) return;
 
+    let iframe = document.getElementById('_gf_hidden');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.name = '_gf_hidden';
+      iframe.id   = '_gf_hidden';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       erro.style.display = 'none';
 
       const comparecer   = form.querySelector('input[name="comparecer"]:checked');
-      const naoVai       = comparecer && comparecer.value === 'Não poderei ir';
       const crianca      = document.getElementById('crianca').value.trim();
       const acompanhante = document.getElementById('acompanhante').value.trim();
       const whatsapp     = document.getElementById('whatsapp').value.trim();
 
-      if (!comparecer || (!naoVai && (!crianca || !acompanhante || !whatsapp))) {
+      if (!comparecer || !crianca || !acompanhante || !whatsapp) {
         erro.style.display = 'block';
         return;
       }
@@ -935,26 +943,35 @@
       btn.disabled = true;
       btn.textContent = 'Enviando…';
 
-      const dados = new URLSearchParams({
-        comparecer:   comparecer.value,
-        crianca:      crianca,
-        acompanhante: acompanhante,
-        whatsapp:     whatsapp
+      const gfForm = document.createElement('form');
+      gfForm.method = 'POST';
+      gfForm.action = FORM_URL;
+      gfForm.target = '_gf_hidden';
+      gfForm.style.display = 'none';
+
+      [
+        ['entry.2062536753', comparecer.value],
+        ['entry.1143640476', crianca],
+        ['entry.1204960290', acompanhante],
+        ['entry.902093424',  whatsapp]
+      ].forEach(function (par) {
+        const input = document.createElement('input');
+        input.type  = 'hidden';
+        input.name  = par[0];
+        input.value = par[1];
+        gfForm.appendChild(input);
       });
 
-      fetch(SCRIPT_URL, { method: 'POST', body: dados })
-        .then(function () {
-          form.style.display    = 'none';
-          success.style.display = 'block';
-          if (stickyBt) stickyBt.classList.add('hidden');
-          success.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        })
-        .catch(function () {
-          btn.disabled = false;
-          btn.textContent = 'Confirmar presença';
-          erro.textContent = 'Erro ao enviar. Tente novamente.';
-          erro.style.display = 'block';
-        });
+      document.body.appendChild(gfForm);
+      gfForm.submit();
+      document.body.removeChild(gfForm);
+
+      setTimeout(function () {
+        form.style.display    = 'none';
+        success.style.display = 'block';
+        if (stickyBt) stickyBt.classList.add('hidden');
+        success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 800);
     });
   })();
 </script>
