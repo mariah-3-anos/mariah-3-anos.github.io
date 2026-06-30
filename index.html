@@ -854,20 +854,6 @@
     });
   })();
 
-  // Mostrar/ocultar campos de nome quando "Não poderei ir" é selecionado
-  (function () {
-    const radios = document.querySelectorAll('input[name="comparecer"]');
-    const campos = document.getElementById('camposPresenca');
-    radios.forEach(function (r) {
-      r.addEventListener('change', function () {
-        const nao = this.value === 'Não poderei ir';
-        campos.style.display = nao ? 'none' : 'block';
-        ['crianca','acompanhante','whatsapp'].forEach(function(id) {
-          document.getElementById(id).required = !nao;
-        });
-      });
-    });
-  })();
 
   // Estrelinhas sutis
   (function () {
