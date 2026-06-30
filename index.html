@@ -953,47 +953,26 @@
     btn.disabled    = true;
     btn.textContent = 'Enviando…';
 
-    let iframe = document.getElementById('_gf_frame');
-    if (!iframe) {
-      iframe = document.createElement('iframe');
-      iframe.name = '_gf_frame';
-      iframe.id   = '_gf_frame';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-    }
-
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = FORM_URL;
-    form.target = '_gf_frame';
-    form.style.display = 'none';
-
-    const campos = [
-      ['entry.2062536753', presenca.value],
-      ['entry.1143640476', document.getElementById('nome').value.trim()],
-      ['entry.1204960290', document.getElementById('acompanhante').value.trim()],
-      ['entry.902093424',  document.getElementById('telefone').value.trim()],
-      ['fbzx',             String(Math.floor(Math.random() * 9e18))],
-      ['fvv',              '1'],
-      ['pageHistory',      '0'],
-    ];
-
-    campos.forEach(function(par) {
-      const input = document.createElement('input');
-      input.type  = 'hidden';
-      input.name  = par[0];
-      input.value = par[1];
-      form.appendChild(input);
+    const nomeCrianca = document.getElementById('nome').value.trim();
+    const params = new URLSearchParams({
+      'entry.2062536753': presenca.value,
+      'entry.1143640476': nomeCrianca,
+      'entry.1204960290': document.getElementById('acompanhante').value.trim(),
+      'entry.902093424':  document.getElementById('telefone').value.trim(),
+      'fbzx':             String(Math.floor(Math.random() * 9e18)),
+      'fvv':              '1',
+      'pageHistory':      '0',
     });
 
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
+    fetch(FORM_URL, {
+      method: 'POST',
+      mode:   'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:   params.toString(),
+    }).catch(function () { /* no-cors sempre falha em ler resposta, ignorar */ });
 
-    const nomeCrianca = document.getElementById('nome').value.trim();
     if (nomeCrianca) {
-      const primeiroNome = nomeCrianca.split(' ')[0];
-      document.getElementById('successName').textContent = primeiroNome;
+      document.getElementById('successName').textContent = nomeCrianca.split(' ')[0];
     }
 
     document.getElementById('rsvpForm').style.display     = 'none';
