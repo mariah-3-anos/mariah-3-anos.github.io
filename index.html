@@ -769,6 +769,21 @@
 
     </form>
 
+    <!-- Form oculto que faz o POST nativo para o Google Forms em nova aba -->
+    <form id="googleForm"
+          action="https://docs.google.com/forms/d/e/1FAIpQLSefBM6AeoO95oEdUY54unUT4j8-6osHisRfdNNF2msrRW7x8w/formResponse"
+          method="POST"
+          target="_blank"
+          style="display:none">
+      <input name="entry.2062536753" id="gf_presenca">
+      <input name="entry.1143640476" id="gf_nome">
+      <input name="entry.1204960290" id="gf_acompanhante">
+      <input name="entry.902093424"  id="gf_telefone">
+      <input name="fbzx"             id="gf_fbzx">
+      <input name="fvv"              value="1">
+      <input name="pageHistory"      value="0">
+    </form>
+
     <div class="success-block" id="successBlock">
       <div class="success-ring">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -954,82 +969,24 @@
     btn.textContent = 'Enviando…';
 
     const nomeCrianca = document.getElementById('nome').value.trim();
-    const params = new URLSearchParams({
-      'entry.2062536753': presenca.value,
-      'entry.1143640476': nomeCrianca,
-      'entry.1204960290': document.getElementById('acompanhante').value.trim(),
-      'entry.902093424':  document.getElementById('telefone').value.trim(),
-      'fbzx':             String(Math.floor(Math.random() * 9e18)),
-      'fvv':              '1',
-      'pageHistory':      '0',
-    });
 
-    function mostrarSucesso(debugInfo) {
-      if (nomeCrianca) {
-        document.getElementById('successName').textContent = nomeCrianca.split(' ')[0];
-      }
-      document.getElementById('rsvpForm').style.display     = 'none';
-      document.getElementById('successBlock').style.display = 'block';
-      document.getElementById('stickyBtn').classList.add('hidden');
+    // Copia os valores para o formulário oculto que faz o POST nativo em nova aba.
+    // POST nativo com target=_blank funciona em qualquer navegador (não cai nas
+    // restrições de cross-origin que bloqueiam fetch/iframe/beacon).
+    document.getElementById('gf_presenca').value     = presenca.value;
+    document.getElementById('gf_nome').value         = nomeCrianca;
+    document.getElementById('gf_acompanhante').value = document.getElementById('acompanhante').value.trim();
+    document.getElementById('gf_telefone').value     = document.getElementById('telefone').value.trim();
+    document.getElementById('gf_fbzx').value         = String(Math.floor(Math.random() * 9e18));
 
-      const dbg = document.createElement('div');
-      dbg.style.cssText = 'margin-top:18px;padding:10px;background:#FFF8E1;border:1px solid #E2C97A;border-radius:8px;font-size:12px;color:#7B5E1A;text-align:center;';
-      dbg.textContent = 'DEBUG: ' + debugInfo;
-      document.getElementById('successBlock').appendChild(dbg);
+    document.getElementById('googleForm').submit();
+
+    if (nomeCrianca) {
+      document.getElementById('successName').textContent = nomeCrianca.split(' ')[0];
     }
-
-    // Dispara TRÊS métodos simultâneos: iframe + sendBeacon + fetch
-    // Basta um chegar. Como o Forms aceita múltiplas respostas, ter duplicata é melhor que zero.
-    const log = [];
-
-    // Método 1: iframe persistente
-    try {
-      const iframe = document.createElement('iframe');
-      iframe.name = 'gf_' + Date.now();
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = FORM_URL;
-      form.target = iframe.name;
-      form.acceptCharset = 'UTF-8';
-      form.style.display = 'none';
-
-      params.forEach(function (value, name) {
-        const inp = document.createElement('input');
-        inp.type = 'hidden';
-        inp.name = name;
-        inp.value = value;
-        form.appendChild(inp);
-      });
-
-      document.body.appendChild(form);
-      form.submit();
-      log.push('iframe:ok');
-    } catch (e) { log.push('iframe:ERR-' + e.message); }
-
-    // Método 2: sendBeacon
-    try {
-      if (navigator.sendBeacon) {
-        const blob = new Blob([params.toString()], { type: 'application/x-www-form-urlencoded' });
-        log.push('beacon:' + navigator.sendBeacon(FORM_URL, blob));
-      } else { log.push('beacon:n/a'); }
-    } catch (e) { log.push('beacon:ERR-' + e.message); }
-
-    // Método 3: fetch
-    try {
-      fetch(FORM_URL, {
-        method:    'POST',
-        mode:      'no-cors',
-        keepalive: true,
-        headers:   { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body:      params.toString(),
-      });
-      log.push('fetch:disparado');
-    } catch (e) { log.push('fetch:ERR-' + e.message); }
-
-    mostrarSucesso(log.join(' | '));
+    document.getElementById('rsvpForm').style.display     = 'none';
+    document.getElementById('successBlock').style.display = 'block';
+    document.getElementById('stickyBtn').classList.add('hidden');
   });
 </script>
 
