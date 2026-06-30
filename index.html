@@ -255,22 +255,6 @@
       border: 1.5px solid rgba(196, 134, 122, 0.14);
     }
 
-    .iframe-wrap {
-      position: relative;
-      width: 100%;
-      min-height: 780px;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #fff;
-    }
-
-    .iframe-wrap iframe {
-      display: block;
-      width: 100%;
-      border: none;
-      background: transparent;
-    }
-
     .form-heading {
       font-family: 'Dancing Script', cursive;
       font-size: 24px;
@@ -749,17 +733,43 @@
     <h2 class="form-heading">Confirme sua presença</h2>
     <p class="form-desc">Preencha abaixo para que possamos te esperar</p>
 
-    <div class="iframe-wrap" id="iframeWrap">
-      <iframe
-        id="gfIframe"
-        src="https://docs.google.com/forms/d/e/1FAIpQLSefBM6AeoO95oEdUY54unUT4j8-6osHisRfdNNF2msrRW7x8w/viewform?embedded=true"
-        width="100%"
-        height="780"
-        frameborder="0"
-        marginheight="0"
-        marginwidth="0"
-        title="Confirmação de presença">Carregando…</iframe>
-    </div>
+    <form id="rsvpForm" autocomplete="off">
+
+      <div class="field">
+        <span class="field-label">Você vai comparecer? <span class="req">*</span></span>
+        <div class="radio-row">
+          <label class="radio-item">
+            <input type="radio" name="comparecer" value="Sim, estarei lá!" required>
+            <span class="radio-btn">Sim, estarei lá!</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="comparecer" value="Não poderei ir">
+            <span class="radio-btn">Não poderei ir</span>
+          </label>
+        </div>
+      </div>
+
+      <div id="camposPresenca">
+        <div class="field">
+          <label class="field-label" for="crianca">Nome da criança <span class="req">*</span></label>
+          <input type="text" id="crianca" name="crianca" placeholder="Ex: João Gabriel">
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="acompanhante">Nome do acompanhante <span class="req">*</span></label>
+          <input type="text" id="acompanhante" name="acompanhante" placeholder="Ex: Amélia Karoline">
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="whatsapp">WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="whatsapp" name="whatsapp" placeholder="(84) 99999-9999">
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Confirmar presença</button>
+      <div class="error-banner" id="errorBanner">Preencha todos os campos obrigatórios.</div>
+
+    </form>
 
     <div class="success-block" id="successBlock">
       <div class="success-ring">
@@ -821,10 +831,10 @@
     const timer = setInterval(tick, 1000);
   })();
 
-  // Botão fixo — esconde quando o iframe está visível na tela
+  // Botão fixo — esconde quando o formulário está visível na tela
   (function () {
     const btn  = document.getElementById('stickyBtn');
-    const alvo = document.getElementById('iframeWrap');
+    const alvo = document.getElementById('rsvpForm');
     if (!btn || !alvo) return;
 
     function avaliar() {
@@ -841,6 +851,21 @@
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  })();
+
+  // Mostrar/ocultar campos de nome quando "Não poderei ir" é selecionado
+  (function () {
+    const radios = document.querySelectorAll('input[name="comparecer"]');
+    const campos = document.getElementById('camposPresenca');
+    radios.forEach(function (r) {
+      r.addEventListener('change', function () {
+        const nao = this.value === 'Não poderei ir';
+        campos.style.display = nao ? 'none' : 'block';
+        ['crianca','acompanhante','whatsapp'].forEach(function(id) {
+          document.getElementById(id).required = !nao;
+        });
+      });
     });
   })();
 
@@ -895,25 +920,55 @@
     URL.revokeObjectURL(url);
   }
 
-  // Detecção de envio no iframe do Google Forms.
-  // O iframe dispara 'load' duas vezes: uma ao carregar o formulário e outra ao
-  // navegar para a página de confirmação após o submit. Trocamos pela tela "Oba!".
+  // Envio do formulário para o Google Apps Script
   (function () {
-    const iframe   = document.getElementById('gfIframe');
-    const wrap     = document.getElementById('iframeWrap');
-    const success  = document.getElementById('successBlock');
-    const stickyBt = document.getElementById('stickyBtn');
-    if (!iframe) return;
+    const SCRIPT_URL = 'https://script.google.com/a/macros/stone.com.br/s/AKfycbxYQULezmG9X6ukuXVxH5idWVs1Q3JUkg4MzYDJej_AIBWAxLNbJVVql8SlhY3oPP9t/exec';
 
-    let loads = 0;
-    iframe.addEventListener('load', function () {
-      loads++;
-      if (loads > 1) {
-        wrap.style.display    = 'none';
-        success.style.display = 'block';
-        if (stickyBt) stickyBt.classList.add('hidden');
-        success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const form     = document.getElementById('rsvpForm');
+    const success  = document.getElementById('successBlock');
+    const btn      = document.getElementById('submitBtn');
+    const erro     = document.getElementById('errorBanner');
+    const stickyBt = document.getElementById('stickyBtn');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      erro.style.display = 'none';
+
+      const comparecer   = form.querySelector('input[name="comparecer"]:checked');
+      const naoVai       = comparecer && comparecer.value === 'Não poderei ir';
+      const crianca      = document.getElementById('crianca').value.trim();
+      const acompanhante = document.getElementById('acompanhante').value.trim();
+      const whatsapp     = document.getElementById('whatsapp').value.trim();
+
+      if (!comparecer || (!naoVai && (!crianca || !acompanhante || !whatsapp))) {
+        erro.style.display = 'block';
+        return;
       }
+
+      btn.disabled = true;
+      btn.textContent = 'Enviando…';
+
+      const dados = new URLSearchParams({
+        comparecer:   comparecer.value,
+        crianca:      crianca,
+        acompanhante: acompanhante,
+        whatsapp:     whatsapp
+      });
+
+      fetch(SCRIPT_URL, { method: 'POST', body: dados })
+        .then(function () {
+          form.style.display    = 'none';
+          success.style.display = 'block';
+          if (stickyBt) stickyBt.classList.add('hidden');
+          success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        })
+        .catch(function () {
+          btn.disabled = false;
+          btn.textContent = 'Confirmar presença';
+          erro.textContent = 'Erro ao enviar. Tente novamente.';
+          erro.style.display = 'block';
+        });
     });
   })();
 </script>
