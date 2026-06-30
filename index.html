@@ -255,6 +255,22 @@
       border: 1.5px solid rgba(196, 134, 122, 0.14);
     }
 
+    .iframe-wrap {
+      position: relative;
+      width: 100%;
+      min-height: 780px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .iframe-wrap iframe {
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+    }
+
     .form-heading {
       font-family: 'Dancing Script', cursive;
       font-size: 24px;
@@ -733,56 +749,17 @@
     <h2 class="form-heading">Confirme sua presença</h2>
     <p class="form-desc">Preencha abaixo para que possamos te esperar</p>
 
-    <form id="rsvpForm" novalidate>
-
-      <div class="field">
-        <span class="field-label">Você vai comparecer?<span class="req">*</span></span>
-        <div class="radio-row">
-          <div class="radio-item">
-            <input type="radio" id="sim" name="presenca" value="Sim" required>
-            <label class="radio-btn" for="sim">Sim, estarei lá!</label>
-          </div>
-          <div class="radio-item">
-            <input type="radio" id="nao" name="presenca" value="Não">
-            <label class="radio-btn" for="nao">Não poderei ir</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="field-label" for="nome">Nome da criança<span class="req">*</span></label>
-        <input type="text" id="nome" name="nome" placeholder="Nome completo" required autocomplete="name">
-      </div>
-
-      <div class="field">
-        <label class="field-label" for="acompanhante">Nome do acompanhante</label>
-        <input type="text" id="acompanhante" name="acompanhante" placeholder="Nome completo">
-      </div>
-
-      <div class="field">
-        <label class="field-label" for="telefone">WhatsApp<span class="req">*</span></label>
-        <input type="tel" id="telefone" name="telefone" placeholder="(84) 99999-9999" required autocomplete="tel" inputmode="numeric" maxlength="15">
-      </div>
-
-      <button type="submit" class="submit-btn" id="submitBtn">Confirmar presença</button>
-      <div class="error-banner" id="errorBanner"></div>
-
-    </form>
-
-    <!-- Form oculto que faz o POST nativo para o Google Forms em nova aba -->
-    <form id="googleForm"
-          action="https://docs.google.com/forms/d/e/1FAIpQLSefBM6AeoO95oEdUY54unUT4j8-6osHisRfdNNF2msrRW7x8w/formResponse"
-          method="POST"
-          target="_blank"
-          style="display:none">
-      <input name="entry.2062536753" id="gf_presenca">
-      <input name="entry.1143640476" id="gf_nome">
-      <input name="entry.1204960290" id="gf_acompanhante">
-      <input name="entry.902093424"  id="gf_telefone">
-      <input name="fbzx"             id="gf_fbzx">
-      <input name="fvv"              value="1">
-      <input name="pageHistory"      value="0">
-    </form>
+    <div class="iframe-wrap" id="iframeWrap">
+      <iframe
+        id="gfIframe"
+        src="https://docs.google.com/forms/d/e/1FAIpQLSefBM6AeoO95oEdUY54unUT4j8-6osHisRfdNNF2msrRW7x8w/viewform?embedded=true"
+        width="100%"
+        height="780"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="Confirmação de presença">Carregando…</iframe>
+    </div>
 
     <div class="success-block" id="successBlock">
       <div class="success-ring">
@@ -790,7 +767,7 @@
       </div>
       <div class="success-title">Oba!</div>
       <p class="success-text">
-        Mal podemos esperar para brincar com você, <span id="successName">amiguinho(a)</span>!
+        Sua presença foi confirmada!<br>Mal podemos esperar para brincar com você!
       </p>
     </div>
   </div>
@@ -806,7 +783,7 @@
 </div>
 
 <!-- Botão fixo de confirmação -->
-<a href="#rsvpForm" class="sticky-btn" id="stickyBtn">Confirmar presença</a>
+<a href="#iframeWrap" class="sticky-btn" id="stickyBtn">Confirmar presença</a>
 
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
@@ -844,17 +821,17 @@
     const timer = setInterval(tick, 1000);
   })();
 
-  // Botão fixo — esconde quando o formulário está visível na tela
+  // Botão fixo — esconde quando o iframe está visível na tela
   (function () {
     const btn  = document.getElementById('stickyBtn');
-    const form = document.getElementById('rsvpForm');
-    if (!btn || !form) return;
+    const alvo = document.getElementById('iframeWrap');
+    if (!btn || !alvo) return;
 
     function avaliar() {
-      const r = form.getBoundingClientRect();
-      const formVisivel = r.top < window.innerHeight - 100 && r.bottom > 100;
-      const enviado = form.style.display === 'none';
-      btn.classList.toggle('hidden', formVisivel || enviado);
+      const r = alvo.getBoundingClientRect();
+      const visivel = r.top < window.innerHeight - 100 && r.bottom > 100;
+      const escondido = alvo.style.display === 'none';
+      btn.classList.toggle('hidden', visivel || escondido);
     }
 
     avaliar();
@@ -863,7 +840,7 @@
 
     btn.addEventListener('click', function (e) {
       e.preventDefault();
-      form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   })();
 
@@ -918,76 +895,27 @@
     URL.revokeObjectURL(url);
   }
 
-  // Máscara de telefone brasileiro
+  // Detecção de envio no iframe do Google Forms.
+  // O iframe dispara 'load' duas vezes: uma ao carregar o formulário e outra ao
+  // navegar para a página de confirmação após o submit. Trocamos pela tela "Oba!".
   (function () {
-    const tel = document.getElementById('telefone');
-    if (!tel) return;
+    const iframe   = document.getElementById('gfIframe');
+    const wrap     = document.getElementById('iframeWrap');
+    const success  = document.getElementById('successBlock');
+    const stickyBt = document.getElementById('stickyBtn');
+    if (!iframe) return;
 
-    function formatar(v) {
-      const d = v.replace(/\D/g, '').substring(0, 11);
-      if (!d)              return '';
-      if (d.length <= 2)   return '(' + d;
-      if (d.length <= 6)   return '(' + d.substring(0,2) + ') ' + d.substring(2);
-      if (d.length <= 10)  return '(' + d.substring(0,2) + ') ' + d.substring(2,6) + '-' + d.substring(6);
-      return '(' + d.substring(0,2) + ') ' + d.substring(2,7) + '-' + d.substring(7);
-    }
-
-    tel.addEventListener('input', function (e) {
-      e.target.value = formatar(e.target.value);
+    let loads = 0;
+    iframe.addEventListener('load', function () {
+      loads++;
+      if (loads > 1) {
+        wrap.style.display    = 'none';
+        success.style.display = 'block';
+        if (stickyBt) stickyBt.classList.add('hidden');
+        success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     });
   })();
-
-  // Envio do formulário via Google Forms (sem CORS)
-  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSefBM6AeoO95oEdUY54unUT4j8-6osHisRfdNNF2msrRW7x8w/formResponse';
-
-  document.getElementById('rsvpForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const btn      = document.getElementById('submitBtn');
-    const errEl    = document.getElementById('errorBanner');
-    const presenca = document.querySelector('input[name="presenca"]:checked');
-
-    errEl.style.display = 'none';
-
-    if (!presenca) {
-      errEl.textContent   = 'Por favor, selecione se você vai comparecer ou não.';
-      errEl.style.display = 'block';
-      return;
-    }
-    if (!document.getElementById('nome').value.trim()) {
-      errEl.textContent   = 'Por favor, informe seu nome.';
-      errEl.style.display = 'block';
-      return;
-    }
-    if (!document.getElementById('telefone').value.trim()) {
-      errEl.textContent   = 'Por favor, informe seu WhatsApp.';
-      errEl.style.display = 'block';
-      return;
-    }
-
-    btn.disabled    = true;
-    btn.textContent = 'Enviando…';
-
-    const nomeCrianca = document.getElementById('nome').value.trim();
-
-    // Copia os valores para o formulário oculto que faz o POST nativo em nova aba.
-    // POST nativo com target=_blank funciona em qualquer navegador (não cai nas
-    // restrições de cross-origin que bloqueiam fetch/iframe/beacon).
-    document.getElementById('gf_presenca').value     = presenca.value;
-    document.getElementById('gf_nome').value         = nomeCrianca;
-    document.getElementById('gf_acompanhante').value = document.getElementById('acompanhante').value.trim();
-    document.getElementById('gf_telefone').value     = document.getElementById('telefone').value.trim();
-    document.getElementById('gf_fbzx').value         = String(Math.floor(Math.random() * 9e18));
-
-    document.getElementById('googleForm').submit();
-
-    if (nomeCrianca) {
-      document.getElementById('successName').textContent = nomeCrianca.split(' ')[0];
-    }
-    document.getElementById('rsvpForm').style.display     = 'none';
-    document.getElementById('successBlock').style.display = 'block';
-    document.getElementById('stickyBtn').classList.add('hidden');
-  });
 </script>
 
 </body>
