@@ -964,19 +964,34 @@
       'pageHistory':      '0',
     });
 
-    fetch(FORM_URL, {
-      method: 'POST',
-      mode:   'no-cors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body:   params.toString(),
-    }).catch(function () {});
-
-    if (nomeCrianca) {
-      document.getElementById('successName').textContent = nomeCrianca.split(' ')[0];
+    function mostrarSucesso() {
+      if (nomeCrianca) {
+        document.getElementById('successName').textContent = nomeCrianca.split(' ')[0];
+      }
+      document.getElementById('rsvpForm').style.display     = 'none';
+      document.getElementById('successBlock').style.display = 'block';
+      document.getElementById('stickyBtn').classList.add('hidden');
     }
-    document.getElementById('rsvpForm').style.display     = 'none';
-    document.getElementById('successBlock').style.display = 'block';
-    document.getElementById('stickyBtn').classList.add('hidden');
+
+    // 1ª tentativa: sendBeacon (mais robusto, sobrevive a navegação)
+    let enviado = false;
+    if (navigator.sendBeacon) {
+      const blob = new Blob([params.toString()], { type: 'application/x-www-form-urlencoded' });
+      enviado = navigator.sendBeacon(FORM_URL, blob);
+    }
+
+    if (enviado) {
+      mostrarSucesso();
+    } else {
+      // 2ª tentativa: fetch keepalive
+      fetch(FORM_URL, {
+        method:    'POST',
+        mode:      'no-cors',
+        keepalive: true,
+        headers:   { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:      params.toString(),
+      }).finally(mostrarSucesso);
+    }
   });
 </script>
 
